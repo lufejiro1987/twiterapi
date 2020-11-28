@@ -1,0 +1,52 @@
+<div class="block text-center col-12">
+  <h1 class="block-title">My Own Twitter- Search "<%= params[:q] %>"</h1>
+</div>
+<hr>
+<% if @tweets.count > 0 %>
+
+<% @tweets.each do |tweet| %>
+<div class="tweet" id="tweet-<%= tweet.id %>%">
+  <p><%= image_tag tweet.user.profile_img_url, class: 'user-thumb', size: '200x200' %>
+    <% if user_signed_in? %>
+    <% if tweet.user == current_user %>
+    <%= link_to tweet.user.username, myprofile_path %>
+    <% else %>
+    <%= link_to tweet.user.username, userprofile_path(user: tweet.user) %>
+    <% end %>
+    <% else %>
+    <%= tweet.user.username %>
+    <% end %>
+  </p>
+  <div class="content">
+    <%= tweet.content %>
+  </div>
+  <% if user_signed_in? %>
+  <% if !tweet.original.nil? %>
+    <p><em><%= link_to 'See Original Tweet', show_path(tweet: tweet.original.id)%></em></p>
+  <% end %>
+  <% else %>
+    <p><em><%= 'See Original Tweet'%></em></p>
+  <% end %>
+  <% if user_signed_in? %>
+  <p>
+    <% if @user_likes.include? tweet.id %>
+    <%= link_to 'Unike', unlike_tweet_path(tweet: tweet.id), method: :post %>
+    <% else %>
+    <%= link_to 'Like', like_tweet_path(tweet: tweet.id), method: :post, remote: true %>
+    <% end %> |
+    <%= link_to 'Retweet', retweet_path(tweet: tweet.id), method: :post %>
+  </p>
+  <% end %>
+  <% if user_signed_in? %>
+  <p><%= link_to (time_ago_in_words tweet.created_at), show_path(tweet: tweet.id) %> | <strong>Likes:</strong> <%= tweet.likes.count %> | <strong>Retweets:</strong> <%= tweet.retweets.blank? ? 0 : tweet.retweets %></p>
+  <% else %>
+  <p><%= time_ago_in_words tweet.created_at %> | <strong>Likes:</strong> <%= tweet.likes.count %> | <strong>Retweets:</strong> <%= tweet.retweets.blank? ? 0 : tweet.retweets %></p>
+  <% end %>
+</div>
+<hr>
+<% end %>
+<%= paginate @tweets %>
+
+<% else %>
+<p><em>No tweets</em></p>
+<% end %>

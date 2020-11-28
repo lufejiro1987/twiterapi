@@ -1,0 +1,12 @@
+<div class="block text-center col-12">
+  <h1 class="block-title">Profile - <%= @user.username %></h1>
+</div>
+<hr>
+<p>Username: <%= @user.username %></p>
+<p>Registration date: <%= @user.created_at.time.to_date %></p>
+<p>Tweets: <%= @tweets.count %></p>
+<p>Number of people following: <%= @following.count %></p>
+<p>Quantity of Followers: <%= @follower.count %></p>
+<p>Tweets content: <%= link_to 'See All Tweets', usertweets_path(user: @user) %></p>
+<p>Image:</p>
+<p><%= image_tag @user.profile_img_url, class: 'user-thumb', size: '200x200' %></p>

@@ -1,0 +1,30 @@
+<% if @tweets.count > 0 %>
+
+<% @tweets.each do |tweet| %>
+<div class="tweet" id="tweet-<%= tweet.id %>%">
+  <p><%= image_tag tweet.user.profile_img_url, class: 'user-thumb' %> <%= tweet.user.email %></p>
+  <div class="content">
+    <%= raw tweet.content.split(' ').map{|c| c.index('#') === 0 ? (link_to c, search_url(q: c)) : c}.join(' ') %>
+  </div>
+  <% if !tweet.original.nil? %>
+    <p><em><%= link_to 'See original tweet', show_path(tweet: tweet.original.id)%></em></p>
+  <% end %>
+  <% if user_signed_in? %>
+  <p>
+    <% if @user_likes.include? tweet.id %>
+    <%= link_to 'Unike', unlike_tweet_path(tweet: tweet.id), method: :post %>
+    <% else %>
+    <%= link_to 'Like', like_tweet_path(tweet: tweet.id), method: :post, remote: true %>
+    <% end %> |
+    <%= link_to 'Retweet', retweet_path(tweet: tweet.id), method: :post %>
+  </p>
+  <% end %>
+  <p><%= link_to (time_ago_in_words tweet.created_at), show_path(tweet: tweet.id) %> | <strong>Likes:</strong> <%= tweet.likes.count %> | <strong>Retweets:</strong> <%= tweet.retweets.blank? ? 0 : tweet.retweets %></p>
+</div>
+<hr>
+<% end %>
+<%= paginate @tweets %>
+
+<% else %>
+<p><em>No tweets</em></p>
+<% end %>

@@ -1,0 +1,31 @@
+<div class="text-right">
+  <% if user_signed_in? %>
+    <%= link_to 'My Tweets', mytweets_path %> | <%= current_user.email %> | <%= link_to "Logout", destroy_user_session_path, { method: :delete } %> | <%= link_to 'Index', root_path %> | <%= link_to 'Following', following_path %> | <%= link_to 'Who follows me', followers_path %>
+  <% else %>
+    <%= link_to 'Login', new_user_session_path %> |
+    <%= link_to 'Sign up', new_user_registration_path %> |
+    <%= link_to 'Index', root_path %>
+  <% end %>
+</div>
+<div class="text-right">
+  <%= form_tag search_path, method: :get do %>
+  <%= search_field_tag :q, params[:q] %>
+  <%= submit_tag 'Search' %>
+  <% end %>
+</div>
+<% if user_signed_in? %>
+<h1>My Own Twitter - Welcome <%= link_to current_user.username, myprofile_path %> <%= image_tag current_user.profile_img_url, class: 'user-thumb', size: '50x50' %></h1>
+<% else %>
+<h1>My Own Twitter</h1>
+<h5>Please SIGN-UP and then LOGIN if you want to get more functions</h5>
+<% end %>
+<hr>
+
+<% if user_signed_in? %>
+<h4>Write a tweet</h4>
+<%= form_tag create_tweet_path, method: :post do %>
+<%= text_area_tag 'content' %>
+<%= submit_tag 'Submit' %>
+<% end %>
+<hr>
+<% end %>

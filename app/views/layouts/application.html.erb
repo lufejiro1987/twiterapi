@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>My Own Twitter</title>
+        <%= csrf_meta_tags %>
+        <%= csp_meta_tag %>
+        <!-- Bootstrap -->
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+        <!-- End Bootstrap -->
+        <%= stylesheet_link_tag 'application', media: 'all' %>
+        <%= javascript_pack_tag 'application' %>
+    </head>
+
+
+    <body>
+        <div class="container">
+            <%= render 'layouts/login_bar' %>
+			<div id="flash">
+            <% if flash[:notice] %>
+                <%= render partial: 'notice' %>
+            <% end %>
+			</div>
+            <% if flash[:alert] %>
+                <div class="alert alert-danger" role="alert">
+                    <%= flash[:alert] %>
+                </div>
+            <% end %>
+            <%= yield %>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+        <script>
+            $(document).on('click', '.like-btn', function () {
+                var url = $(this).attr('url');
+                var id = $(this).attr('id');
+                $.ajax({
+                    url: url+'.js',
+                    type: "POST",
+                    data: {
+                        id: id
+                    },
+                    processData: false,
+					contentType: false,
+                    success: function (data) {
+                        $('#tweets').html(data);
+						$("#flash").html('<%= j render partial: "main/notice" %>');
+                        $('.alert-success').html('Tweet Liked')
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>

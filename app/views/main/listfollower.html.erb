@@ -1,0 +1,15 @@
+<div class="block text-center col-12">
+  <h1 class="block-title">Who Follows Me</h1>
+</div>
+<hr>
+<% if @friends.count > 0 %>
+
+<% @friends.each do |friend| %>
+<div><p><%= image_tag friend.user.profile_img_url, class: 'user-thumb', size: '200x200' %> <%= link_to friend.user.username, userprofile_path(user: friend.user) %> </p></div>
+<hr>
+<% end %>
+<%= paginate @friends %>
+
+<% else %>
+<p><em>No Followers</em></p>
+<% end %>

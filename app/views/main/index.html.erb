@@ -1,0 +1,28 @@
+<div class="block text-center col-12">
+    <h1 class="block-title">Index</h1>
+</div>
+<hr>
+<div class="home-wrapper">
+	<div id="tweets">
+	<h3>Timeline</h3>
+	<% if @tweets.count > 0 %>
+		<%= render partial: 'main/tweets', locals: { items: @tweets},:formats=>[:js] %>
+	<% else %>
+		<p>
+			<em>No tweets</em>
+		</p>
+	<% end %>
+	</div>
+	<% if user_signed_in? %>
+	<div id="friends">
+	<h3>Tweets from friends</h3>
+	<% if @friends_tweets.count > 0 %>
+		<%= render partial: 'main/tweets', locals: { items: @friends_tweets},:formats=>[:js] %>
+	<% else %>
+		<p>
+			<em>No tweets from friends</em>
+		</p>
+	<% end %>
+	</div>
+	<% end %>
+</div>

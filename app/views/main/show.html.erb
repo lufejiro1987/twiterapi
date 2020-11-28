@@ -1,0 +1,28 @@
+<div class="block text-center col-12">
+  <h1 class="block-title">Tweet - <%= @tweet.user.username %></h1>
+</div>
+<hr>
+<div class="tweet" id="tweet-<%= @tweet.id %>%">
+  <p><%= image_tag @tweet.user.profile_img_url, class: 'user-thumb', size: '200x200' %> 
+  
+    <% if @tweet.user == current_user %>
+      <%= link_to @tweet.user.username, myprofile_path %>
+    <% else %>
+      <%= link_to @tweet.user.username, userprofile_path(user: @tweet.user) %>
+    <% end %>
+  </p>
+  <div class="content">
+    <%= @tweet.content %>
+  </div>
+  <% if !@tweet.original.nil? %>
+    <p><em><%= link_to 'See Original Tweet', show_path(tweet: @tweet.id)%></em></p>
+  <% end %>
+  <p><%= time_ago_in_words @tweet.created_at %> | <strong>Likes:</strong> <%= @tweet.likes.count %> | <strong>Retweets:</strong> <%= @tweet.retweets.blank? ? 0 : @tweet.retweets %></p>
+  <div class="likes">
+    <% @tweet.likes.each do |like| %>
+    <%= image_tag like.user.profile_img_url, class: 'small-list', size: '200x200', title: like.user.email %>
+    <% end %>
+  </div>
+</div>
+<hr>
+<%= link_to '< Back', 'javascript:history.go(-1)' %>

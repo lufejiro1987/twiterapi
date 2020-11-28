@@ -1,0 +1,71 @@
+<% @tweets.each do |tweet| %>
+		<div class="tweet" id="tweet-<%= tweet.id %>%">
+			<p><%= image_tag tweet.user.profile_img_url, class: 'user-thumb', size: '200x200' %>
+				<% if user_signed_in? %>
+					<% if tweet.user == current_user %>
+						<%= link_to tweet.user.username, myprofile_path %>
+					<% else %>
+						<%= link_to tweet.user.username, userprofile_path(user: tweet.user) %>
+					<% end %>
+				<% else %>
+					<%= tweet.user.username %>
+				<% end %>
+			</p>
+			<div class="content">
+				<% if user_signed_in? %>
+					<%= raw tweet.content.split(' ').map{|c| c.index('#') === 0 ? (link_to c, search_url(q: c)) : c}.join(' ') %>
+				<% else %>
+					<%= raw tweet.content.split(' ').map{|c| c.index('#') === 0 ? c : c}.join(' ') %>
+				<% end %>
+			</div>
+			<% if user_signed_in? %>
+				<% if !tweet.original.nil? %>
+					<p>
+						<em><%= link_to 'See Original Tweet', show_path(tweet: tweet.original.id)%></em>
+					</p>
+				<% end %>
+			<% else %>
+				<p>
+					<em><%= 'See Original Tweet'%></em>
+				</p>
+			<% end %>
+			<% if user_signed_in? %>
+				<p>
+					<% if @user_likes.include? tweet.id %>
+						<%= link_to 'Unike', unlike_tweet_path(tweet: tweet.id), method: :post, remote: true %>
+					<% else %>
+						<%# <%= link_to 'Like', like_tweet_path(tweet: tweet.id), class: 'like-btn', remote: true, method: :post %> 
+						<a url="<%= like_tweet_path(tweet: tweet.id) %>" class="like-btn" id="<%= tweet.id %>">Like</a>
+					<% end %>
+					|
+					<%= link_to 'Retweet', retweet_path(tweet: tweet.id), method: :post %>
+					<% if @user_friend.include? tweet.user.id %>
+					<%= link_to 'Unfollow', unfollow_user_path(friend: tweet.user.id), method: :post %>
+					<% elsif tweet.user == current_user %>
+					<% else %>
+						|
+						<%= link_to 'Follow', follow_user_path(friend: tweet.user.id), method: :post %>
+					<% end %>
+				</p>
+			<% end %>
+			<% if user_signed_in? %>
+				<p><%= link_to (time_ago_in_words tweet.created_at), show_path(tweet: tweet.id) %>
+					|
+					<strong>Likes:</strong>
+					<%= tweet.likes.count %>
+					|
+					<strong>Retweets:</strong>
+					<%= tweet.retweets.blank? ? 0 : tweet.retweets %></p>
+			<% else %>
+				<p><%= time_ago_in_words tweet.created_at %>
+					|
+					<strong>Likes:</strong>
+					<%= tweet.likes.count %>
+					|
+					<strong>Retweets:</strong>
+					<%= tweet.retweets.blank? ? 0 : tweet.retweets %></p>
+			<% end %>
+		</div>
+		<hr>
+	<% end %>
+	<%= paginate @tweets %>
